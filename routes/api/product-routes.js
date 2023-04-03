@@ -3,30 +3,34 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // The `/api/products` endpoint
 
+// find all products
+// includes associated categories and tags 
 router.get('/', async (req, res) => {
   try {
     const productData = await Product.findAll({
       include: [{ model: Category }, { model: Tag },
               ],
     });
+    // displays json with product data information
     res.status(200).json(productData);
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-
+// find a specific product
+// includes associated categories and tags 
 router.get('/:id', async (req, res) => {
   try {
     const productData = await Product.findByPk(req.params.id, {
       include: [{ model: Category }, { model: Tag },],
     });
-
+    // checks that there is a product with the requested id 
     if (!productData) {
       res.status(404).json({ message: 'No Product found with that id!' });
       return;
     }
-
+    // displays json with product data information
     res.status(200).json(productData);
   } catch (err) {
     res.status(500).json(err);
@@ -107,6 +111,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
+// delete route for product with a specific id
 router.delete('/:id', async (req, res) => {
   try {
     const productData = await Product.destroy({
@@ -114,12 +119,12 @@ router.delete('/:id', async (req, res) => {
         id: req.params.id,
       },
     });
-
+    // checks that there is a product with the requested id 
     if (!productData) {
       res.status(404).json({ message: 'No Product found with that id!' });
       return;
     }
-
+    // returns message that product was deleted via destroy method 
     res.status(200).json({message: 'Product deleted!'});
   } catch (err) {
     res.status(500).json(err);
